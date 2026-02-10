@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FRACTION TRAILBLAZERS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Press Start 2P', cursive; box-sizing: border-box; }
+        body { margin: 0; padding: 0; background: #0d1b2a; background-image: url('/static/background.png'); background-size: cover; background-position: center; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        .glass-panel { background: rgba(20, 30, 48, 0.95); border: 6px solid #f1c40f; padding: 40px; width: 1000px; max-height: 94vh; overflow-y: auto; text-align: center; box-shadow: 0 0 50px rgba(0,0,0,0.9); }
+        .screen { display: none; width: 100%; flex-direction: column; justify-content: center; align-items: center; }
+        .screen.active { display: flex; }
+        .game-title { font-size: 6rem; color: #FFD700; text-shadow: 10px 10px 0px #FF4500, 16px 16px 0px #000; margin-bottom: 50px; line-height: 1.1; animation: float 3s ease-in-out infinite; width: 100%; text-align: center; }
+        .btn { background: linear-gradient(to bottom, #f39c12 0%, #e91e63 100%); color: #1a1a1a; border: 5px solid #8e44ad; border-radius: 30px; padding: 20px; cursor: pointer; margin: 10px; width: 480px; font-size: 1rem; text-transform: uppercase; box-shadow: 0 8px 0px #4a148c; transition: 0.1s; }
+        .btn:hover { filter: brightness(1.2); transform: scale(1.03); }
+        .copyright { font-size: 0.75rem; color: #f1c40f; margin-top: 40px; text-align: center; width: 100%; text-shadow: 2px 2px #000; }
+        input[type="text"] { background: #000; border: 3px solid #f1c40f; color: #fff; padding: 15px; font-size: 1rem; width: 600px; margin: 20px; text-align: center; font-family: 'Press Start 2P'; }
+        
+        .l-table, .smart-table { width: 100%; font-size: 0.7rem; border-collapse: collapse; margin-top: 25px; table-layout: fixed; }
+        th, td { border: 2px solid #f1c40f; padding: 12px; text-align: left; color: #FFF; word-wrap: break-word; }
+        th { color: #f1c40f; text-align: center; font-size: 0.6rem; }
+        .col-rank { width: 12%; } .col-name { width: 38%; } .col-score { width: 15%; } .col-time { width: 15%; } .col-date { width: 20%; }
+        .fastest-badge { background: #FFD700; color: #000; padding: 2px 4px; font-size: 0.4rem; border-radius: 4px; display: inline-block; margin-top: 5px; }
+
+        h2 { color: #f1c40f; font-size: 1.8rem; margin-top: 25px; }
+        h3 { color: #f1c40f; font-size: 1.2rem; margin-top: 20px; text-align: left; }
+        p { font-size: 0.85rem; line-height: 1.8; color: white; text-align: left; margin-bottom: 12px; }
+        
+        .opt-btn { background: #000; color: white; border: 3px solid #2ecc71; padding: 18px; width: 45%; margin: 10px; cursor: pointer; font-size: 0.65rem; }
+        .opt-btn:hover { background: #2ecc71; color: black; }
+        .compass-btn { background: #1abc9c; color: white; border: 3px solid #16a085; border-radius: 15px; padding: 12px; cursor: pointer; font-size: 0.7rem; width: 400px; margin: 20px auto; display: block; }
+        .compass-box { display: none; background: rgba(255, 255, 255, 0.1); border-left: 5px solid #1abc9c; padding: 15px; margin: 15px 0; color: #1abc9c; font-size: 0.65rem; line-height: 1.6; text-align: left; white-space: pre-wrap; }
+        #timer-display { font-size: 1.2rem; color: #f1c40f; margin-bottom: 10px; text-align: center; }
+        .mute-btn { position: fixed; top: 20px; right: 20px; background: #e74c3c; border: 2px solid #fff; color: #fff; padding: 10px; cursor: pointer; font-size: 0.6rem; z-index: 1000; border-radius: 10px; }
+    </style>
+</head>
+<body onclick="unlockAudio()">
+
+    <button class="mute-btn" onclick="toggleMute(event)">🔊 MUTE</button>
+
+    <audio id="snd-bg" src="/static/bg_music.mp3" loop></audio>
+    <audio id="snd-correct" src="/static/correct.mp3"></audio>
+    <audio id="snd-incorrect" src="/static/incorrect.mp3"></audio>
+    <audio id="snd-click" src="/static/click.mp3"></audio>
+    <audio id="snd-victory" src="/static/victory.mp3"></audio>
+
+    <div id="screen-home" class="screen active">
+        <h1 class="game-title">FRACTION<br>TRAILBLAZERS</h1>
+        <button class="btn" onclick="playClick(); navTo('screen-name')">START GAME</button>
+        <button class="btn" onclick="playClick(); navTo('screen-how')">HOW TO PLAY</button>
+        <button class="btn" onclick="playClick(); fetchLeaderboard()">LEADERBOARD</button>
+        <button class="btn" onclick="playClick(); navTo('screen-about')">ABOUT</button>
+        <div class="copyright">@ 2026 Fraction Trailblazer | Educational Research Project</div>
+    </div>
+
+    <div id="screen-about" class="screen">
+        <div class="glass-panel">
+            <h2>What is Fraction Trailblazers?</h2>
+            <p>“Fraction Trailblazers” is an educational game designed to help Grade 6 students master fractions through interactive gameplay. It enhances problem-solving skills by applying fractions to real-life scenarios.</p>
+            <p>As students progress, they tackle challenges that deepen their understanding while keeping the experience engaging. The app blends learning with adventure, making fractions enjoyable and memorable.</p>
+            
+            <div style="display:flex; justify-content: space-around; gap:30px; margin-top: 30px;">
+                <div style="flex:1"><h3>MISSION</h3><p style="font-size:0.7rem">To revolutionize education by advocating for game-based learning, and supporting educators in integrating technology-driven teaching strategies that enhance student understanding and engagement.</p></div>
+                <div style="flex:1"><h3>VISION</h3><p style="font-size:0.7rem">To create a world where every learner confidently understands and applies fractions, unlocking the power of mathematics to solve real-world problems and inspire future innovators.</p></div>
+            </div>
+
+            <h3 style="text-align: center; font-size: 1.4rem;">SMART GOALS</h3>
+            <table class="smart-table">
+                <tr><th style="width:10%">S</th><td>The Grade 6 USLS-IS Students will demonstrate improvement in their fraction-related knowledge.</td></tr>
+                <tr><th>M</th><td>Within 3-5 months of implementation, most of the students will report increased interest and confidence toward learning fractions through surveys.</td></tr>
+                <tr><th>A</th><td>Enable students to solve at least 85% of real-world fraction-based problems in the game through practice and consistent learning.</td></tr>
+                <tr><th>R</th><td>Implement adaptive difficulty settings that support differentiated learning styles.</td></tr>
+                <tr><th>T</th><td>Conduct at least one group-based learning activity once a month.</td></tr>
+            </table>
+
+            <div style="margin-top: 40px; border-top: 4px solid #f1c40f; padding-top: 20px;">
+                <h3 style="text-align: center; margin-bottom: 5px; font-size: 1.2rem;">Group 4 "Trailblazers" of STEM 12-U</h3>
+                <h3 style="text-align: center; margin-bottom: 30px; font-size: 0.8rem; color: #f1c40f;">S.Y. 2025-2026</h3>
+                <div style="display:flex; justify-content: space-around; gap:20px;">
+                    <div style="flex:1"><h3>Researchers:</h3><p style="font-size:0.65rem">Cañada, Miguel Paolo<br>Grajo, Julia Jane<br>Hioka, Tyrone<br>Lagarta, Allen<br>Molato, Prince Jhurie<br>Pabon, Iñigo Antonino<br>Sison, Thobey Brian</p></div>
+                    <div style="flex:1"><h3>Game Developers:</h3><p style="font-size:0.65rem">Grajo, Julia Jane<br>Sison, Thobey Brian</p></div>
+                </div>
+            </div>
+            <button class="btn" style="width:280px; margin-top:40px;" onclick="playClick(); navTo('screen-home')">BACK</button>
+        </div>
+    </div>
+
+    <div id="screen-how" class="screen">
+        <div class="glass-panel">
+            <h2>HOW TO PLAY</h2>
+            <p style="text-align:left">1. Enter your name to begin the journey.</p>
+            <p style="text-align:left">2. Read the fraction challenges carefully.</p>
+            <p style="text-align:left">3. Choose the correct answer from the choices provided.</p>
+            <p style="text-align:left">4. Correct answers earn you points on the first try!</p>
+            <button class="btn" style="width:280px; margin-top:35px;" onclick="playClick(); navTo('screen-home')">BACK</button>
+        </div>
+    </div>
+
+    <div id="screen-leaderboard" class="screen">
+        <div class="glass-panel">
+            <h2>TRAILBLAZERS LEADERBOARD</h2>
+            <table class="l-table">
+                <thead><tr><th class="col-rank">RANK</th><th class="col-name">NAME</th><th class="col-score">SCORE</th><th class="col-time">TIME</th><th class="col-date">DATE</th></tr></thead>
+                <tbody id="leaderboard-body"></tbody>
+            </table>
+            <button class="btn" style="width:250px; margin-top:30px;" onclick="playClick(); navTo('screen-home')">BACK</button>
+        </div>
+    </div>
+
+    <div id="screen-name" class="screen">
+        <div class="glass-panel">
+            <h2>ENTER YOUR NAME</h2>
+            <input type="text" id="player-name" placeholder="TRAILBLAZER NAME (MAX 40)" maxlength="40">
+            <button class="btn" style="width:300px; margin-top:20px;" onclick="playClick(); validateName()">CONTINUE</button>
+        </div>
+    </div>
+
+    <div id="screen-playing" class="screen">
+        <div class="glass-panel" id="playing-panel">
+            <div id="timer-display">TIME: 0s</div>
+            <div id="part-tag" style="color:#f1c40f; font-size:0.5rem; margin-bottom: 10px;"></div>
+            <div style="display:flex; justify-content:center;"><div class="progress-container"><div id="progress-fill"></div></div></div>
+            <p id="q-text" style="font-size:1.1rem; min-height:80px; text-align:center; color: white;"></p>
+            <div id="options-box" style="display:flex; flex-wrap:wrap; justify-content:center;"></div>
+            <button class="compass-btn" onclick="playClick(); toggleCompass()">🧭 TRAILBLAZER'S COMPASS</button>
+            <div id="compass-box" class="compass-box"></div>
+            <div id="feedback" style="margin-top:20px; font-size:0.8rem; height:20px; text-align: center;"></div>
+        </div>
+    </div>
+
+    <script>
+        let questions = [], cur = 0, playerName = "", finalScore = 0, attemptStarted = false;
+        let timerInterval, seconds = 0, audioUnlocked = false, isMuted = false;
+
+        const sndBg = document.getElementById('snd-bg');
+        const sndCorrect = document.getElementById('snd-correct');
+        const sndIncorrect = document.getElementById('snd-incorrect');
+        const sndClick = document.getElementById('snd-click');
+        const sndVictory = document.getElementById('snd-victory');
+
+        function toggleMute(e) {
+            e.stopPropagation();
+            isMuted = !isMuted;
+            [sndBg, sndCorrect, sndIncorrect, sndClick, sndVictory].forEach(s => s.muted = isMuted);
+            document.querySelector('.mute-btn').innerText = isMuted ? "🔇 UNMUTE" : "🔊 MUTE";
+        }
+
+        function unlockAudio() {
+            if (!audioUnlocked) {
+                sndBg.volume = 0.5;
+                sndBg.play().catch(e => {});
+                audioUnlocked = true;
+            }
+        }
+
+        function playClick() { 
+            sndClick.volume = 0.8; // CLICK INCREASED TO 80%
+            sndClick.currentTime = 0; 
+            sndClick.play(); 
+        }
+
+        function navTo(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        async function fetchLeaderboard() {
+            try {
+                const res = await fetch('/get_leaderboard');
+                const data = await res.json();
+                const body = document.getElementById('leaderboard-body');
+                body.innerHTML = "";
+                let maxScore = data.length > 0 ? data[0].score : 0;
+                let fastestTime = Infinity;
+                if (maxScore > 0) { data.forEach(r => { if(r.score === maxScore && r.time < fastestTime) fastestTime = r.time; }); }
+                data.forEach((row, idx) => {
+                    let badge = (row.score === maxScore && row.time === fastestTime) ? `<br><span class="fastest-badge">FASTEST</span>` : "";
+                    body.innerHTML += `<tr><td>#${idx+1}</td><td>${row.name}${badge}</td><td>${row.score}/15</td><td>${row.time}s</td><td>${row.date}</td></tr>`;
+                });
+                navTo('screen-leaderboard');
+            } catch(e) { alert("Leaderboard error!"); }
+        }
+
+        function validateName() {
+            const name = document.getElementById('player-name').value;
+            if (name.trim() === "") alert("Enter a name!");
+            else { 
+                playerName = name; 
+                sndBg.currentTime = 0;
+                sndBg.play();
+                startGame(); 
+            }
+        }
+
+        async function startGame() {
+            const res = await fetch('/get_data');
+            questions = await res.json();
+            cur = 0; finalScore = 0; seconds = 0;
+            navTo('screen-playing');
+            startTimer();
+            render();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => { seconds++; document.getElementById('timer-display').innerText = `TIME: ${seconds}s`; }, 1000);
+        }
+
+        function toggleCompass() {
+            const box = document.getElementById('compass-box');
+            box.style.display = (box.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function render() {
+            if (cur >= questions.length) {
+                clearInterval(timerInterval);
+                sndBg.pause();
+                sndVictory.volume = 0.5; // VICTORY LOWERED
+                sndVictory.play();
+                fetch('/save_score', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: playerName, score: finalScore, time: seconds }) });
+                document.getElementById('playing-panel').innerHTML = `
+                    <h1>TRAIL COMPLETE!</h1>
+                    <p style='text-align:center'>${playerName}, score: ${finalScore}/15 | Time: ${seconds}s</p>
+                    <button class='btn' onclick='location.reload()'>FINISH</button>
+                    <button class='btn' style='background:linear-gradient(to bottom, #2ecc71, #27ae60)' onclick='location.reload()'>RETRY</button>
+                    <button class='btn' style='background:linear-gradient(to bottom, #3498db, #2980b9)' onclick='fetchLeaderboard()'>LEADERBOARD</button>`;
+                return;
+            }
+            attemptStarted = true;
+            const q = questions[cur];
+            document.getElementById('part-tag').innerText = q.part + ` | ${cur+1}/15`;
+            document.getElementById('q-text').innerText = q.q;
+            document.getElementById('progress-fill').style.width = (cur / questions.length * 100) + "%";
+            document.getElementById('compass-box').innerText = q.compass;
+            document.getElementById('compass-box').style.display = "none";
+            const box = document.getElementById('options-box');
+            box.innerHTML = "";
+            document.getElementById('feedback').innerText = "";
+            q.options.forEach(o => {
+                const b = document.createElement('button');
+                b.className = 'opt-btn'; b.innerText = o;
+                b.onclick = () => {
+                    if(o === q.a) {
+                        if(attemptStarted) finalScore++;
+                        sndCorrect.volume = 0.7; sndCorrect.currentTime = 0; sndCorrect.play();
+                        document.getElementById('feedback').style.color = "#2ecc71";
+                        document.getElementById('feedback').innerText = "CORRECT!";
+                        cur++; setTimeout(render, 800);
+                    } else {
+                        attemptStarted = false;
+                        sndIncorrect.volume = 0.4; 
+                        sndIncorrect.currentTime = 0; sndIncorrect.play();
+                        document.getElementById('feedback').style.color = "#e74c3c";
+                        document.getElementById('feedback').innerText = "TRY AGAIN!";
+                    }
+                };
+                box.appendChild(b);
+            });
+        }
+    </script>
+</body>
+</html>
